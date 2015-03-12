@@ -124,6 +124,11 @@ var AgendaView = fcViews.agenda = View.extend({
 							this.timeGrid.headHtml() + // render the day-of-week headers
 						'</td>' +
 					'</tr>' +
+					'<tr>' +
+						'<td class="' + this.widgetHeaderClass + '">' +
+							this.timeGrid.resourceHeadHtml() + // render the resource headers
+						'</td>' +
+					'</tr>' +
 				'</thead>' +
 				'<tbody class="fc-body">' +
 					'<tr>' +

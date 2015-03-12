@@ -9,8 +9,10 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 	rowCnt: 0, // number of rows
 	colCnt: 0, // number of cols
+	resourceCnt: 0, // number of resources
 	rowData: null, // array of objects, holding misc data for each row
 	colData: null, // array of objects, holding misc data for each column
+	resourceData: null, // array of objects, holding misc data for each resource
 
 	el: null, // the containing element
 	coordMap: null, // a GridCoordMap that converts pixel values to datetimes
@@ -142,7 +144,7 @@ var Grid = fc.Grid = RowRenderer.extend({
 
 	// Gets an object containing row/col number, misc data, and range information about the cell.
 	// Accepts row/col values, an object with row/col properties, or a single-number offset from the first cell.
-	getCell: function(row, col) {
+	getCell: function(row, col, resource) {
 		var cell;
 
 		if (col == null) {
@@ -156,9 +158,9 @@ var Grid = fc.Grid = RowRenderer.extend({
 			}
 		}
 
-		cell = { row: row, col: col };
+		cell = { row: row, col: col, resource: resource };
 
-		$.extend(cell, this.getRowData(row), this.getColData(col));
+		$.extend(cell, this.getRowData(row), this.getColData(col), this.getResourceData(resource));
 		$.extend(cell, this.computeCellRange(cell));
 
 		return cell;
@@ -195,6 +197,10 @@ var Grid = fc.Grid = RowRenderer.extend({
 		return this.colData[col] || {};
 	},
 
+
+	getResourceData: function(resource) {
+		return this.resourceData[resource] || {};
+	},
 
 	// Retrieves the element representing the given row
 	getRowEl: function(row) {
@@ -605,6 +611,28 @@ var Grid = fc.Grid = RowRenderer.extend({
 			'</div>';
 	},
 
+	resourceHeadHtml: function() {
+		return '' +
+			'<div class="fc-row ' + this.view.widgetHeaderClass + '">' +
+				'<table>' +
+					'<thead>' +
+					this.rowHtml('resourceHead') + // leverages RowRenderer
+					'</thead>' +
+				'</table>' +
+			'</div>';
+	},
+
+	// Used by the `headHtml` method, via RowRenderer, for rendering the HTML of a day-of-week header cell
+	// TODO: move to another class. not applicable to all Grids
+	resourceHeadCellHtml: function(cell) {
+		var view = this.view;
+		var resourceName = cell.name;
+
+		return '' +
+			'<th class="fc-resource-header ' + view.widgetHeaderClass + '">' +
+				htmlEscape(resourceName) +
+			'</th>';
+	},
 
 	// Used by the `headHtml` method, via RowRenderer, for rendering the HTML of a day-of-week header cell
 	// TODO: move to another class. not applicable to all Grids
@@ -617,7 +645,6 @@ var Grid = fc.Grid = RowRenderer.extend({
 				htmlEscape(date.format(this.colHeadFormat)) +
 			'</th>';
 	},
-
 
 	// Renders the HTML for a single-day background cell
 	bgCellHtml: function(cell) {

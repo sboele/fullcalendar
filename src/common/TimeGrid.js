@@ -94,9 +94,13 @@ var TimeGrid = Grid.extend({
 
 			html +=
 				'<tr ' + (!minutes ? '' : 'class="fc-minor"') + '>' +
-					(!isRTL ? axisHtml : '') +
-					'<td class="' + view.widgetContentClass + '"/>' +
-					(isRTL ? axisHtml : '') +
+					(!isRTL ? axisHtml : '');
+					//html += '<td class="' + view.widgetContentClass + '"/>';
+					for (var resource = 0; resource < this.resourceCnt; resource++) {
+						html += '<td class="' + view.widgetContentClass + '"/>';
+					}
+
+					html += (isRTL ? axisHtml : '') +
 				"</tr>";
 
 			slotTime.add(this.slotDuration);
@@ -179,6 +183,9 @@ var TimeGrid = Grid.extend({
 		this.colData = colData;
 		this.colCnt = colData.length;
 		this.rowCnt = Math.ceil((this.maxTime - this.minTime) / this.snapDuration); // # of vertical snaps
+
+		this.resourceData = view.options.resources;
+		this.resourceCnt = view.options.resources.length;
 	},
 
 

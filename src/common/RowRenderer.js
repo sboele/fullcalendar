@@ -24,13 +24,22 @@ var RowRenderer = Class.extend({
 		var renderCell = this.getHtmlRenderer('cell', rowType);
 		var rowCellHtml = '';
 		var col;
+		var resource;
 		var cell;
 
 		row = row || 0;
 
 		for (col = 0; col < this.colCnt; col++) {
-			cell = this.getCell(row, col);
-			rowCellHtml += renderCell(cell);
+			if (rowType == 'resourceHead') {
+				for (resource = 0; resource < this.resourceCnt; resource++) {
+					cell = this.getCell(row, col, resource);
+					rowCellHtml += renderCell(cell);
+				}
+			}
+			else {
+				cell = this.getCell(row, col);
+				rowCellHtml += renderCell(cell);
+			}
 		}
 
 		rowCellHtml = this.bookendCells(rowCellHtml, rowType, row); // apply intro and outro

@@ -187,6 +187,17 @@ TimeGrid.mixin({
 			forwardCoord = Math.min(1, backwardCoord + (forwardCoord - backwardCoord) * 2);
 		}
 
+		var resourceIndex = 0;
+		for (var i = 0; i < this.resourceData.length; i++) {
+			if (this.resourceData[i].id === seg.resource) {
+				resourceIndex = i;
+				break;
+			}
+		}
+
+		var width = 1 / this.resourceData.length;
+		var rightResourceIndex = (this.resourceData.length - 1) - resourceIndex;
+
 		if (this.isRTL) {
 			left = 1 - forwardCoord;
 			right = backwardCoord;
@@ -194,6 +205,18 @@ TimeGrid.mixin({
 		else {
 			left = backwardCoord;
 			right = 1 - forwardCoord;
+		}
+
+		if (this.resourceData != null) {
+			left = right = 0;
+			left = left + (resourceIndex / this.resourceData.length);
+			right = right + (rightResourceIndex / this.resourceData.length);
+
+			var offsetLeft = width * backwardCoord;
+			left = left + offsetLeft;
+
+			var offsetRight = width * (1 - forwardCoord);
+			right = right + offsetRight;
 		}
 
 		props.zIndex = seg.level + 1; // convert from 0-base to 1-based
@@ -398,7 +421,7 @@ function computeSlotSegCollisions(seg, otherSegs, results) {
 
 // Do these segments occupy the same vertical space?
 function isSlotSegCollision(seg1, seg2) {
-	return seg1.bottom > seg2.top && seg1.top < seg2.bottom;
+	return (seg1.resource === seg2.resource) && (seg1.bottom > seg2.top && seg1.top < seg2.bottom);
 }
 
 

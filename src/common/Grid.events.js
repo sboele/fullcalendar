@@ -817,23 +817,25 @@ Grid.mixin({
 	eventsToNormalRanges: function(events) {
 		var calendar = this.view.calendar;
 		var ranges = [];
-		var i, event;
+		var i, j, event;
 		var eventStart, eventEnd;
 
 		for (i = 0; i < events.length; i++) {
 			event = events[i];
+			for (j = 0; j < event.resources.length; j++) {
+				// make copies and normalize by stripping timezone
+				eventStart = event.start.clone().stripZone();
+				eventEnd = calendar.getEventEnd(event).stripZone();
 
-			// make copies and normalize by stripping timezone
-			eventStart = event.start.clone().stripZone();
-			eventEnd = calendar.getEventEnd(event).stripZone();
-
-			ranges.push({
-				event: event,
-				start: eventStart,
-				end: eventEnd,
-				eventStartMS: +eventStart,
-				eventDurationMS: eventEnd - eventStart
-			});
+				ranges.push({
+					event: event,
+					resource: event.resources[j],
+					start: eventStart,
+					end: eventEnd,
+					eventStartMS: +eventStart,
+					eventDurationMS: eventEnd - eventStart
+				});
+			}
 		}
 
 		return ranges;
@@ -899,6 +901,7 @@ Grid.mixin({
 		for (i = 0; i < segs.length; i++) {
 			seg = segs[i];
 			seg.event = eventRange.event;
+			seg.resource = eventRange.resource;
 			seg.eventStartMS = eventRange.eventStartMS;
 			seg.eventDurationMS = eventRange.eventDurationMS;
 		}
@@ -1012,4 +1015,3 @@ function getDraggedElMeta(el) {
 
 	return { eventProps: eventProps, startTime: startTime, duration: duration, stick: stick };
 }
-
