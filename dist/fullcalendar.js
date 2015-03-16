@@ -3474,6 +3474,18 @@ var Grid = fc.Grid = RowRenderer.extend({
 		}
 
 		return classes;
+	},
+
+	getResourceIndex: function(resource) {
+		var resourceIndex = -1;
+		for (var i = 0; i < this.resourceData.length; i++) {
+			if (this.resourceData[i].id === resource) {
+				resourceIndex = i;
+				break;
+			}
+		}
+
+		return resourceIndex;
 	}
 
 });
@@ -5971,6 +5983,20 @@ var TimeGrid = Grid.extend({
 		);
 	},
 
+	computeResourceLeft: function(resource) {
+		var resourceIndex = this.getResourceIndex(resource);
+		var left = resourceIndex / this.resourceData.length;
+		return left * 100 + '%';
+	},
+
+
+	computeResourceRight: function(resource) {
+		var resourceIndex = this.getResourceIndex(resource);
+		var rightResourceIndex = (this.resourceData.length - 1) - resourceIndex;
+		var right = rightResourceIndex / this.resourceData.length;
+		return right * 100 + '%';
+	},
+
 
 	// Computes the top coordinate, relative to the bounds of the grid, of the given time (a Duration).
 	computeTimeTop: function(time) {
@@ -6169,7 +6195,9 @@ var TimeGrid = Grid.extend({
 						containerEl.append(
 							seg.el.css({
 								top: this.computeDateTop(seg.start, dayDate),
-								bottom: -this.computeDateTop(seg.end, dayDate) // the y position of the bottom edge
+								bottom: -this.computeDateTop(seg.end, dayDate), // the y position of the bottom edge
+								left: this.computeResourceLeft(seg.resource),
+								right: this.computeResourceRight(seg.resource)
 							})
 						);
 					}
@@ -6377,13 +6405,7 @@ TimeGrid.mixin({
 			forwardCoord = Math.min(1, backwardCoord + (forwardCoord - backwardCoord) * 2);
 		}
 
-		var resourceIndex = 0;
-		for (var i = 0; i < this.resourceData.length; i++) {
-			if (this.resourceData[i].id === seg.resource) {
-				resourceIndex = i;
-				break;
-			}
-		}
+		var resourceIndex = this.getResourceIndex(seg.resource);
 
 		var width = 1 / this.resourceData.length;
 		var rightResourceIndex = (this.resourceData.length - 1) - resourceIndex;

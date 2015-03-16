@@ -687,6 +687,18 @@ var Grid = fc.Grid = RowRenderer.extend({
 		}
 
 		return classes;
+	},
+
+	getResourceIndex: function(resource) {
+		var resourceIndex = -1;
+		for (var i = 0; i < this.resourceData.length; i++) {
+			if (this.resourceData[i].id === resource) {
+				resourceIndex = i;
+				break;
+			}
+		}
+
+		return resourceIndex;
 	}
 
 });

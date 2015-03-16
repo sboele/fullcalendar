@@ -187,13 +187,7 @@ TimeGrid.mixin({
 			forwardCoord = Math.min(1, backwardCoord + (forwardCoord - backwardCoord) * 2);
 		}
 
-		var resourceIndex = 0;
-		for (var i = 0; i < this.resourceData.length; i++) {
-			if (this.resourceData[i].id === seg.resource) {
-				resourceIndex = i;
-				break;
-			}
-		}
+		var resourceIndex = this.getResourceIndex(seg.resource);
 
 		var width = 1 / this.resourceData.length;
 		var rightResourceIndex = (this.resourceData.length - 1) - resourceIndex;
