@@ -4298,24 +4298,28 @@ Grid.mixin({
 	eventsToNormalRanges: function(events) {
 		var calendar = this.view.calendar;
 		var ranges = [];
-		var i, j, event;
+		var i, j, event, resource;
 		var eventStart, eventEnd;
 
 		for (i = 0; i < events.length; i++) {
 			event = events[i];
 			for (j = 0; j < event.resources.length; j++) {
-				// make copies and normalize by stripping timezone
-				eventStart = event.start.clone().stripZone();
-				eventEnd = calendar.getEventEnd(event).stripZone();
+				resource = event.resources[j];
 
-				ranges.push({
-					event: event,
-					resource: event.resources[j],
-					start: eventStart,
-					end: eventEnd,
-					eventStartMS: +eventStart,
-					eventDurationMS: eventEnd - eventStart
-				});
+				if (this.isResourceInColumns(resource)) {
+					// make copies and normalize by stripping timezone
+					eventStart = event.start.clone().stripZone();
+					eventEnd = calendar.getEventEnd(event).stripZone();
+
+					ranges.push({
+						event: event,
+						resource: resource,
+						start: eventStart,
+						end: eventEnd,
+						eventStartMS: +eventStart,
+						eventDurationMS: eventEnd - eventStart
+					});
+				}
 			}
 		}
 
@@ -4388,6 +4392,18 @@ Grid.mixin({
 		}
 
 		return segs;
+	},
+
+	// Checks if the resource on the event is actually in the displayed columns
+	isResourceInColumns: function(resource) {
+		var resourceSelected = false;
+		for (var i = 0; i < this.resourceData.length; i++) {
+			if (this.resourceData[i].id === resource) {
+				resourceSelected = true;
+				break;
+			}
+		}
+		return resourceSelected;
 	}
 
 });
