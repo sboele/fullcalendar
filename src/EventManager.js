@@ -754,7 +754,7 @@ function EventManager(options) { // assumed to be a calendar
 		// compute the delta for moving the end date
 		if (newProps.end) {
 			endDelta = diffDates(newProps.end, oldProps.end);
-			durationDelta = endDelta.subtract(startDelta);
+			durationDelta = endDelta - startDelta;
 		}
 		else {
 			durationDelta = null;
