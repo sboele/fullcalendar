@@ -130,7 +130,7 @@ TimeGrid.mixin({
 			startTimeText = this.getEventTimeText(event, null, false); // displayEnd=false
 		}
 
-		return '<a class="' + classes.join(' ') + '"' +
+		return '<a class="' + classes.join(' ') + '" data-event-id="' + event.id + '"' +
 			(event.url ?
 				' href="' + htmlEscape(event.url) + '"' :
 				''
@@ -141,6 +141,8 @@ TimeGrid.mixin({
 				) +
 			'>' +
 				'<div class="fc-content">' +
+				(event.innerHTML ?
+					event.innerHTML :
 					(timeText ?
 						'<div class="fc-time"' +
 						' data-start="' + htmlEscape(startTimeText) + '"' +
@@ -155,7 +157,7 @@ TimeGrid.mixin({
 							htmlEscape(event.title) +
 						'</div>' :
 						''
-						) +
+					)) +
 				'</div>' +
 				'<div class="fc-bg"/>' +
 				/* TODO: write CSS for this

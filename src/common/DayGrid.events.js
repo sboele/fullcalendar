@@ -117,7 +117,7 @@ DayGrid.mixin({
 			'<span class="fc-title">' +
 				(htmlEscape(event.title || '') || '&nbsp;') + // we always want one line of height
 			'</span>';
-		
+
 		return '<a class="' + classes.join(' ') + '"' +
 				(event.url ?
 					' href="' + htmlEscape(event.url) + '"' :
@@ -129,10 +129,12 @@ DayGrid.mixin({
 					) +
 			'>' +
 				'<div class="fc-content">' +
+				(event.innerHTML ?
+					event.innerHTML :
 					(this.isRTL ?
 						titleHtml + ' ' + timeHtml : // put a natural space in between
 						timeHtml + ' ' + titleHtml   //
-						) +
+					)) +
 				'</div>' +
 				(isResizableFromStart ?
 					'<div class="fc-resizer fc-start-resizer" />' :
@@ -246,7 +248,7 @@ DayGrid.mixin({
 		// Give preference to elements with certain criteria, so they have
 		// a chance to be closer to the top.
 		segs.sort(compareSegs);
-		
+
 		for (i = 0; i < segs.length; i++) {
 			seg = segs[i];
 

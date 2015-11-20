@@ -1,7 +1,7 @@
 /*!
- * FullCalendar v2.3.0
- * Docs & License: http://fullcalendar.io/
- * (c) 2015 Adam Shaw
+ * <%= meta.title %> v<%= meta.version %>
+ * Docs & License: <%= meta.homepage %>
+ * (c) <%= meta.copyright %>
  */
 
 (function(factory) {
@@ -18,7 +18,7 @@
 
 ;;
 
-var fc = $.fullCalendar = { version: "2.3.0" };
+var fc = $.fullCalendar = { version: "<%= meta.version %>" };
 var fcViews = fc.views = {};
 
 
@@ -5121,7 +5121,7 @@ DayGrid.mixin({
 			'<span class="fc-title">' +
 				(htmlEscape(event.title || '') || '&nbsp;') + // we always want one line of height
 			'</span>';
-		
+
 		return '<a class="' + classes.join(' ') + '"' +
 				(event.url ?
 					' href="' + htmlEscape(event.url) + '"' :
@@ -5133,10 +5133,12 @@ DayGrid.mixin({
 					) +
 			'>' +
 				'<div class="fc-content">' +
+				(event.innerHTML ?
+					event.innerHTML :
 					(this.isRTL ?
 						titleHtml + ' ' + timeHtml : // put a natural space in between
 						timeHtml + ' ' + titleHtml   //
-						) +
+					)) +
 				'</div>' +
 				(isResizableFromStart ?
 					'<div class="fc-resizer fc-start-resizer" />' :
@@ -5250,7 +5252,7 @@ DayGrid.mixin({
 		// Give preference to elements with certain criteria, so they have
 		// a chance to be closer to the top.
 		segs.sort(compareSegs);
-		
+
 		for (i = 0; i < segs.length; i++) {
 			seg = segs[i];
 
@@ -6348,7 +6350,7 @@ TimeGrid.mixin({
 			startTimeText = this.getEventTimeText(event, null, false); // displayEnd=false
 		}
 
-		return '<a class="' + classes.join(' ') + '"' +
+		return '<a class="' + classes.join(' ') + '" data-event-id="' + event.id + '"' +
 			(event.url ?
 				' href="' + htmlEscape(event.url) + '"' :
 				''
@@ -6359,6 +6361,8 @@ TimeGrid.mixin({
 				) +
 			'>' +
 				'<div class="fc-content">' +
+				(event.innerHTML ?
+					event.innerHTML :
 					(timeText ?
 						'<div class="fc-time"' +
 						' data-start="' + htmlEscape(startTimeText) + '"' +
@@ -6373,7 +6377,7 @@ TimeGrid.mixin({
 							htmlEscape(event.title) +
 						'</div>' :
 						''
-						) +
+					)) +
 				'</div>' +
 				'<div class="fc-bg"/>' +
 				/* TODO: write CSS for this
